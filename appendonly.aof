@@ -5,3 +5,17 @@ $5
 mykey
 $13
 Hello, Godis!
+*3
+$3
+SET
+$5
+mykey
+$13
+Hello, World!
+*3
+$3
+set
+$4
+mani
+$10
+salam mani
