@@ -2,6 +2,7 @@ package datastore
 
 import "sync"
 
+
 type DataStore struct {
     data map[string]string
     mu   sync.RWMutex
