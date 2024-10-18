@@ -5,7 +5,7 @@ FROM golang:1.23 AS BUILDER
 WORKDIR /app
 
 # Copy the Go Modules manifest (go.mod) and download dependencies
-COPY go.mod ./
+COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the source code to the container
