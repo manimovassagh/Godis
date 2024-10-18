@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  godis-server:
+    image: manimovassagh/godis-server:latest
+    container_name: godis-server
+    ports:
+      - "5001:6379"
+    networks:
+      - godis-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6379"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  godis-cli:
+    image: manimovassagh/godis-cli:latest
+    container_name: godis-cli
+    depends_on:
+      godis-server:
+        condition: service_healthy  # Only run when the godis-server is healthy
+    networks:
+      - godis-network
+    stdin_open: true  # Keep STDIN open for interactive CLI
+    tty: true  # Allocate a pseudo-TTY for interaction
+
+networks:
+  godis-network:
+    driver: bridge
