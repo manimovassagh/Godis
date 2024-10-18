@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +23,6 @@ jobs:
       with:
         go-version: '1.23.0'
 
-
     # Install dependencies
     - name: Install dependencies
       run: go mod download
@@ -33,6 +31,22 @@ jobs:
     - name: Build the project
       run: go build ./...
 
-    # Run tests
-    - name: Run tests
-      run: go test ./... -v
+    # Run tests and generate JUnit report
+    - name: Run tests and generate JUnit report
+      run: |
+        mkdir -p test-reports
+        go test ./... -v 2>&1 | tee >(go-junit-report > test-reports/junit.xml)
+
+    # Upload the test report as an artifact
+    - name: Upload test report
+      uses: actions/upload-artifact@v3
+      with:
+        name: junit-test-report
+        path: test-reports/junit.xml
+
+    # Parse JUnit results and create a test summary
+    - name: Create test summary
+      uses: dorny/test-summary@v2
+      with:
+        format: markdown
+        test-files: test-reports/junit.xml
