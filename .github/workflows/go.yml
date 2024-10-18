@@ -31,22 +31,34 @@ jobs:
     - name: Build the project
       run: go build ./...
 
-    # Run tests and generate JUnit report
-    - name: Run tests and generate JUnit report
+    # Run tests and generate report
+    - name: Run tests and save result
+      id: test-results
       run: |
         mkdir -p test-reports
-        go test ./... -v 2>&1 | tee >(go-junit-report > test-reports/junit.xml)
+        go test ./... -v | tee test-reports/results.txt
 
-    # Upload the test report as an artifact
+    # Generate a summary in Markdown format
+    - name: Create test summary in Markdown
+      run: |
+        echo "## Test Summary" > test-reports/summary.md
+        PASSED=$(grep -c '--- PASS' test-reports/results.txt)
+        FAILED=$(grep -c '--- FAIL' test-reports/results.txt)
+        TOTAL=$(($PASSED + $FAILED))
+        echo "| Total | Passed | Failed |" >> test-reports/summary.md
+        echo "|-------|--------|--------|" >> test-reports/summary.md
+        echo "| $TOTAL | $PASSED | $FAILED |" >> test-reports/summary.md
+
+    # Upload test results for later inspection
     - name: Upload test report
       uses: actions/upload-artifact@v3
       with:
-        name: junit-test-report
-        path: test-reports/junit.xml
+        name: test-report
+        path: test-reports/results.txt
 
-    # Parse JUnit results and create a test summary
-    - name: Create test summary
-      uses: dorny/test-summary@v2
-      with:
-        format: markdown
-        test-files: test-reports/junit.xml
+    # Upload Markdown summary for display in the GitHub Actions summary
+    - name: Upload test summary to GitHub Actions summary
+      run: |
+        cat test-reports/summary.md
+        echo "" >> $GITHUB_STEP_SUMMARY
+        cat test-reports/summary.md >> $GITHUB_STEP_SUMMARY
