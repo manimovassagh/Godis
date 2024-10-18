@@ -212,7 +212,7 @@ Please ensure your code adheres to the project's coding standards and includes a
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
+![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)
 ## Acknowledgments
 
 - [Redis](https://redis.io/) for the inspiration behind this project.
