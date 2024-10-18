@@ -25,7 +25,7 @@ build-cli: build-dir
 	$(GO_CMD) build -o $(CLI_NAME) $(CLI_DIR)
 
 # Run the server
-run-server: build-server
+run: build-server
 	@echo "Running Godis Server..."
 	./$(BINARY_NAME)
 
