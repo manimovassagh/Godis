@@ -18,6 +18,10 @@ type Client struct {
 	aof       *aof.AOFHandler
 }
 
+// NewClient returns a new Client instance that will handle the given connection.
+//
+// It initializes the Client with the given connection, a new bufio.Reader,
+// the global DataStore, and the global AOFHandler.
 func NewClient(conn net.Conn) *Client {
 	return &Client{
 		conn:      conn,
@@ -27,6 +31,11 @@ func NewClient(conn net.Conn) *Client {
 	}
 }
 
+// Handle starts a loop that reads commands from the client and executes them.
+// It uses the Client's reader to read requests from the client and the
+// protocol package to parse the requests. It then executes the commands
+// and writes the response back to the client. If the client disconnects,
+// the loop exits and the connection is closed.
 func (c *Client) Handle() {
 	defer c.conn.Close()
 	clientAddr := c.conn.RemoteAddr().String()
@@ -58,6 +67,8 @@ func (c *Client) Handle() {
 	}
 }
 
+// ping handles the PING command for the client. 
+// It takes an array of arguments and responds with the appropriate message ("PONG" if no argument provided).
 func (c *Client) ping(args []string) {
 	var response string
 	if len(args) > 1 {
@@ -68,6 +79,8 @@ func (c *Client) ping(args []string) {
 	protocol.WriteSimpleString(c.conn, response)
 }
 
+// echo handles the ECHO command for the client.
+// It takes an array of arguments and responds with the same string sent by the client.
 func (c *Client) echo(args []string) {
 	if len(args) != 2 {
 		protocol.WriteError(c.conn, "ERR wrong number of arguments for 'ECHO' command")
@@ -76,6 +89,9 @@ func (c *Client) echo(args []string) {
 	protocol.WriteBulkString(c.conn, args[1])
 }
 
+// set handles the SET command for the client.
+// It takes an array of arguments with the following format: ["SET", key, value].
+// It sets the given key-value pair in the in-memory data store and appends the command to the AOF file, then responds with "OK".
 func (c *Client) set(args []string) {
 	if len(args) != 3 {
 		protocol.WriteError(c.conn, "ERR wrong number of arguments for 'SET' command")
@@ -87,6 +103,10 @@ func (c *Client) set(args []string) {
 	protocol.WriteSimpleString(c.conn, "OK")
 }
 
+// get handles the GET command for the client.
+// It takes an array of arguments with the following format: ["GET", key].
+// It looks up the given key in the in-memory data store and responds with the
+// associated value. If the key is not found, it responds with a null bulk string.
 func (c *Client) get(args []string) {
 	if len(args) != 2 {
 		protocol.WriteError(c.conn, "ERR wrong number of arguments for 'GET' command")

@@ -11,12 +11,16 @@ type Server struct {
 	address string
 }
 
+// New returns a new Server instance that will listen on the given address.
 func New(address string) *Server {
 	return &Server{
 		address: address,
 	}
 }
 
+// Run starts the TCP server and begins listening for incoming connections.
+// When a connection is established, it creates a new Client and runs it in a
+// goroutine.
 func (s *Server) Run() error {
 	listener, err := net.Listen("tcp", s.address)
 	if err != nil {
