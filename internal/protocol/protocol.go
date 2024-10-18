@@ -8,7 +8,7 @@ import (
 	"net"
 	"strconv"
 	"strings"
-)
+) 
 
 // ParseRequest parses a client request from the connection
 func ParseRequest(reader *bufio.Reader) ([]string, error) {
