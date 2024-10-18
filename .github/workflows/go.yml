@@ -38,16 +38,10 @@ jobs:
         mkdir -p test-reports
         go test ./... -v | tee test-reports/results.txt
 
-    # Generate a summary in Markdown format
-    - name: Create test summary in Markdown
-      run: |
-        echo "## Test Summary" > test-reports/summary.md
-        PASSED=$(grep -c '--- PASS' test-reports/results.txt)
-        FAILED=$(grep -c '--- FAIL' test-reports/results.txt)
-        TOTAL=$(($PASSED + $FAILED))
-        echo "| Total | Passed | Failed |" >> test-reports/summary.md
-        echo "|-------|--------|--------|" >> test-reports/summary.md
-        echo "| $TOTAL | $PASSED | $FAILED |" >> test-reports/summary.md
+    # Build the project
+    - name: Build the project
+      run: test-summary/action@v2
+      if: always()
 
     # Upload test results for later inspection
     - name: Upload test report
