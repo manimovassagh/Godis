@@ -39,20 +39,5 @@ jobs:
         go test ./... -v | tee test-reports/results.txt
 
     # Build the project
-    - name: Build the project
-      run: test-summary/action@v2
-      if: always()
-
-    # Upload test results for later inspection
-    - name: Upload test report
-      uses: actions/upload-artifact@v3
-      with:
-        name: test-report
-        path: test-reports/results.txt
-
-    # Upload Markdown summary for display in the GitHub Actions summary
-    - name: Upload test summary to GitHub Actions summary
-      run: |
-        cat test-reports/summary.md
-        echo "" >> $GITHUB_STEP_SUMMARY
-        cat test-reports/summary.md >> $GITHUB_STEP_SUMMARY
+    - name: Test
+      uses: robherley/go-test-action@v0.1.0
