@@ -1,0 +1,5 @@
+# Ignore the Go build cache, local binaries, and tests
+/build
+*.log
+**/*_test.go
+.github/
