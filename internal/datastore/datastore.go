@@ -20,6 +20,7 @@ func GetDataStore() *DataStore {
 			data: make(map[string]string),
 		}
 	})
+
 	return instance
 }
 
