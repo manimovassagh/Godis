@@ -49,6 +49,7 @@ func main() {
 			continue
 		}
 
+
 		// Send command to server
 		err = protocol.WriteCommand(conn, args)
 		if err != nil {
